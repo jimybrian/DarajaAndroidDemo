@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             AccountReference = "STK_PUSH_DEMO",
             Amount = amount,
             BusinessShortCode = DarajaInfo.shortCode,
-            CallBackURL = "https://example.com",
+            CallBackURL = "https://example.com/anydomain",
             PartyA = phoneNumber,
             PartyB = DarajaInfo.shortCode,
             Password = DarajaInfo.getSTKPassword(timeStamp),

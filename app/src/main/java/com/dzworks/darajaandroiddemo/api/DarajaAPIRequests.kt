@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import timber.log.Timber
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,24 +28,21 @@ interface DarajaAPIRequests {
 }
 
 object DarajaInfo {
-    val consumerKey = "nRI1MdnQ55qzB4cjLO3K0epbSF140F0C"
-    val consumerSecret = "Z2GmqyF0warAYtGI"
+//    val consumerKey = "nRI1MdnQ55qzB4cjLO3K0epbSF140F0C"
+//    val consumerSecret = "Z2GmqyF0warAYtGI"
 
-    val appKeySecret = "";
-    val auth = "";
-    val shortCode = "174379";
-    val lipaPasSKey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
+    val consumerKey = "AQo4rHgxO9bvP4lb4As7g0t6Ebngd7ms";
+    val consumerSecret = "b5Szox0TC6qj8Pdb";
 
-    //Sandbox Creds
-    val initiatorSecurityCred = "RI6yzL99wVYbN8nOZfKtzJAFlU7hUScpEMWGJ1cPaCqaAqv90ayl+aCTddGpC3t19KnWGuNZ+XsBFC7Bie0iMt5/JL/nWxi0EULJcoi6DGJX2CajdI1njyN5FvfxX7arkv7kmSTf2r2WMQlByMQ7UXhtiw5Ke5Zeo8kinPwQs82Pmq8c2B2WQXz7BAT0FivND26EWOoxyYnQCzZDxzVvJFm6KpZRHwUItkQBGvqH/repnrfFfdTz6mxJlSatrYy/aeioqxQr9cSLFN2wxA52n+4ULkrA1HfyM89EP3pYYzuGanAJrOkmwTU5JWXz3oK0NmoxY0i2ENUr6JosOCcozw==";
-    val initiatorName = "apitest443";
-    val secCred = "443reset";
+    val shortCode = "174379"
+    val lipaPasSKey = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"
 
     fun getCurrentTimeStamp(): String? {
         return try {
-            val dateFormat = SimpleDateFormat("yyyyMMddhhmmss")
-            val currentTime = Calendar.getInstance().time
-            dateFormat.format(currentTime)
+            val timeStamp = SimpleDateFormat("yyyyMMddhhmmss", Locale.ENGLISH)
+                .format(Calendar.getInstance().time)
+            Timber.d("Timestamp $timeStamp")
+            timeStamp
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -52,14 +50,20 @@ object DarajaInfo {
     }
 
     fun getSTKPassword(timeStamp: String) : String{
-        val password:String = "$shortCode$lipaPasSKey$timeStamp}"
-        return encodeToString(password.toByteArray(charset("UTF-8")), NO_WRAP)
+        val password:String = shortCode + lipaPasSKey + timeStamp
+        return b64String(password)
     }
 
     fun getAuthKey(): String{
         val authKey = "$consumerKey:$consumerSecret"
-        val encodedAuthKey = encodeToString(authKey.toByteArray(charset("ISO-8859-1")), NO_WRAP)
-        return "Basic $encodedAuthKey"
+        return "Basic ${b64String(authKey)}"
+    }
+
+    fun b64String(s:String):String{
+        val bytes = s.toByteArray(charset("ISO-8859-1"))
+        val auth = Base64.getEncoder().encodeToString(bytes);
+
+        return  auth
     }
 }
 
